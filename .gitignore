@@ -119,6 +119,9 @@ dist
 # Firebase cache directory
 .firebase/
 
+# CDK Files
+cdk.out/
+
 # TernJS port file
 .tern-port
 

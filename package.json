@@ -1,0 +1,33 @@
+{
+  "name": "secure-file-sharing-system",
+  "version": "1.0.0",
+  "description": "Production-ready secure file sharing system with automatic EventBridge expiry",
+  "main": "bin/secure-file-sharing.js",
+  "scripts": {
+    "build": "echo \"No build specified\" && exit 0",
+    "cdk": "cdk",
+    "synth": "cdk synth",
+    "deploy": "cdk deploy"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.500.0",
+    "@aws-sdk/client-s3": "^3.500.0",
+    "@aws-sdk/client-scheduler": "^3.500.0",
+    "@aws-sdk/lib-dynamodb": "^3.500.0",
+    "@aws-sdk/s3-request-presigner": "^3.500.0",
+    "aws-cdk-lib": "^2.130.0",
+    "constructs": "^10.3.0"
+  },
+  "devDependencies": {
+    "aws-cdk": "^2.130.0"
+  },
+  "keywords": [
+    "aws",
+    "cdk",
+    "serverless",
+    "s3",
+    "eventbridge"
+  ],
+  "author": "",
+  "license": "ISC"
+}

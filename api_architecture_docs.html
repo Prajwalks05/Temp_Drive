@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture & API Documentation | Secure File Sharing System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --bg: #f1f5f9;
+            --surface: #ffffff;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --heading: #0f172a;
+            --code-bg: #1e293b;
+            --code-text: #e2e8f0;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--surface);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            color: var(--heading);
+            font-size: 2.25rem;
+            letter-spacing: -0.025em;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.125rem;
+            margin-top: 0.75rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            border: 1px solid var(--border);
+        }
+
+        h2 {
+            color: var(--heading);
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2::before {
+            content: "";
+            display: block;
+            width: 8px;
+            height: 24px;
+            background-color: var(--primary);
+            border-radius: 4px;
+        }
+
+        h3 {
+            color: var(--heading);
+            font-size: 1.25rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        p, ul, li {
+            font-size: 1rem;
+        }
+
+        ul {
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            background-color: #f1f5f9;
+            color: #b91c1c;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.875em;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 1.25rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875em;
+            line-height: 1.5;
+            margin: 1rem 0;
+            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        .endpoint {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .endpoint-header {
+            background-color: #f8fafc;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .method-badge {
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .method-badge.post { background-color: #dbeafe; color: #1e40af; }
+        .method-badge.put { background-color: #fef08a; color: #854d0e; }
+        .method-badge.get { background-color: #dcfce3; color: #166534; }
+
+        .endpoint-url {
+            font-family: 'Fira Code', monospace;
+            font-weight: 500;
+            color: var(--heading);
+        }
+
+        .endpoint-body {
+            padding: 1.5rem;
+        }
+
+        .diagram-container {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+        
+        .note {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+            color: #92400e;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+    <!-- Mermaid JS for Architecture Diagram -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: { primaryColor: '#f1f5f9', primaryTextColor: '#0f172a', primaryBorderColor: '#cbd5e1', lineColor: '#3b82f6' } });
+    </script>
+</head>
+<body>
+
+    <header>
+        <h1>Secure File Sharing System</h1>
+        <p>Complete Serverless Architecture & API Documentation built with AWS CDK</p>
+    </header>
+
+    <main>
+        <!-- Architecture Section -->
+        <section class="card">
+            <h2>System Architecture</h2>
+            <p>This application is built using a 100% serverless, event-driven architecture on AWS. It uses Pre-Signed URLs to bypass the API compute layer for heavy file transfers, and EventBridge Scheduler for zero-compute auto-expiry.</p>
+            
+            <div class="diagram-container">
+                <div class="mermaid">
+                    graph TD
+                    Client([Client / Postman])
+                    
+                    subgraph AWS Cloud
+                        Cognito[Amazon Cognito<br/>Identity & Auth]
+                        APIGW[API Gateway<br/>REST API]
+                        
+                        subgraph AWS Lambda Microservices
+                            UploadFn(Upload Handler)
+                            ShareFn(Share Handler)
+                            DownloadFn(Download Handler)
+                            DeleteFn(Delete Handler)
+                        end
+                        
+                        DB[(DynamoDB<br/>File Metadata)]
+                        S3[Amazon S3<br/>File Storage]
+                        EB((EventBridge<br/>Scheduler))
+                    end
+
+                    Client -->|1. Auth| Cognito
+                    Cognito -->|IdToken| Client
+                    Client -->|2. API Requests| APIGW
+                    APIGW --> UploadFn & ShareFn & DownloadFn
+                    
+                    UploadFn -->|Write Metadata| DB
+                    UploadFn -->|Generate Pre-signed URL| S3
+                    UploadFn -->|Set Expiry Alarm| EB
+                    
+                    Client -.->|3. Direct PUT Transfer| S3
+                    Client -.->|4. Direct GET Transfer| S3
+                    
+                    EB -.->|Time Expires| DeleteFn
+                    DeleteFn -->|Delete Record| DB
+                    DeleteFn -->|Delete File| S3
+                </div>
+            </div>
+
+            <h3>How Data is Stored</h3>
+            <div class="grid-2">
+                <div>
+                    <strong>Amazon S3 (The Files)</strong>
+                    <p>Physical files are stored in a private S3 bucket. The bucket blocks all public access. Files can only be written or read using temporary, cryptographically signed URLs generated by the Lambda functions.</p>
+                </div>
+                <div>
+                    <strong>Amazon DynamoDB (The Metadata)</strong>
+                    <p>Stores the "blueprint" of the file. Each record contains:</p>
+                    <ul>
+                        <li><code>file_id</code> (Partition Key)</li>
+                        <li><code>owner_id</code> (Cognito User SUB)</li>
+                        <li><code>shared_with</code> (Array of user IDs)</li>
+                        <li><code>expires_at</code> (Timestamp)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- API Integration Section -->
+        <section class="card">
+            <h2>API Integration Guide</h2>
+            
+            <div class="note">
+                <strong>Authentication Requirement:</strong> All API Gateway endpoints (except the direct S3 PUT) require a valid Cognito <code>IdToken</code> passed in the <code>Authorization</code> header as a Bearer Token.
+            </div>
+
+            <!-- Endpoint 1: Upload -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method-badge post">POST</span>
+                    <span class="endpoint-url">{base_url}upload</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>Authorizes a file upload, creates a database record, sets the auto-expiry trigger, and returns a pre-signed S3 URL.</p>
+                    <strong>Headers:</strong>
+                    <ul>
+                        <li><code>Authorization</code>: <code>Bearer &lt;IdToken&gt;</code></li>
+                    </ul>
+                    <strong>Request Body (JSON):</strong>
+<pre><code>{
+  "filename": "confidential_report.pdf",
+  "contentType": "application/pdf",
+  "expiryHours": 24
+}</code></pre>
+                    <strong>Response (200 OK):</strong>
+<pre><code>{
+  "file_id": "uuid-1234-5678",
+  "upload_url": "{upload_url}",
+  "message": "Upload link generated. Expires in 15 minutes."
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Endpoint 2: Direct S3 Upload -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method-badge put">PUT</span>
+                    <span class="endpoint-url">{upload_url}</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>Uploads the physical file directly to the S3 bucket bypassing the backend server. The <code>{upload_url}</code> is the massive string returned from the previous POST request.</p>
+                    <div class="note" style="background-color: #fef2f2; border-color: #ef4444; color: #991b1b;">
+                        <strong>CRITICAL:</strong> Do NOT send the Authorization header for this request. S3 will reject it.
+                    </div>
+                    <strong>Headers:</strong>
+                    <ul>
+                        <li><code>Content-Type</code>: (Must match what you sent in Step 1)</li>
+                        <li><em>No Auth Headers</em></li>
+                    </ul>
+                    <strong>Request Body:</strong>
+                    <p>Raw Binary File Data</p>
+                    <strong>Response:</strong>
+                    <p><code>200 OK</code> (Empty body)</p>
+                </div>
+            </div>
+
+            <!-- Endpoint 3: Share -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method-badge post">POST</span>
+                    <span class="endpoint-url">{base_url}share</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>Updates DynamoDB to grant download permissions to another Cognito user.</p>
+                    <strong>Headers:</strong>
+                    <ul>
+                        <li><code>Authorization</code>: <code>Bearer &lt;IdToken&gt;</code></li>
+                    </ul>
+                    <strong>Request Body (JSON):</strong>
+<pre><code>{
+  "file_id": "uuid-1234-5678",
+  "target_user_id": "cognito-sub-id-of-recipient"
+}</code></pre>
+                    <strong>Response (200 OK):</strong>
+<pre><code>{
+  "message": "File shared successfully."
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Endpoint 4: Download -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method-badge get">GET</span>
+                    <span class="endpoint-url">{base_url}download/{file_id}</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>Verifies if the requester is the owner or in the <code>shared_with</code> list. If authorized, returns a temporary pre-signed S3 download link.</p>
+                    <strong>Headers:</strong>
+                    <ul>
+                        <li><code>Authorization</code>: <code>Bearer &lt;IdToken&gt;</code></li>
+                    </ul>
+                    <strong>Response (200 OK):</strong>
+<pre><code>{
+  "download_url": "https://s3.amazonaws.com/...",
+  "message": "Link valid for 15 minutes."
+}</code></pre>
+                </div>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
